@@ -1,12 +1,8 @@
-ARG BASE_IMAGE_TAG
-
 FROM wodby/alpine:3.18
 
 ARG VARNISH_VER
-ARG TARGETPLATFORM
-ARG BUILDPLATFORM
 
-ENV VARNISH_VER="6.0.11"
+ENV VARNISH_VER="6.0.12"
 
 COPY patches /tmp/patches/
 COPY GeoIP.dat.gz /usr/share/GeoIP/

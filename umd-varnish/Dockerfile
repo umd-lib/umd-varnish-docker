@@ -6,6 +6,7 @@ ENV VARNISH_VER="6.0.12"
 
 COPY patches /tmp/patches/
 COPY GeoIP.dat.gz /usr/share/GeoIP/
+COPY varnishd_static /etc/init.d/varnishd_static
 
 RUN set -ex; \
     \
@@ -156,8 +157,8 @@ RUN set -ex; \
 	    /etc/varnish/includes; \
     \
     touch /etc/varnish/preset.vcl /etc/init.d/varnishd; \
-    chown varnish:varnish /etc/varnish/preset.vcl /etc/init.d/varnishd; \
-    chmod +x /etc/init.d/varnishd; \
+    chown varnish:varnish /etc/varnish/preset.vcl /etc/init.d/varnishd /etc/init.d/varnishd_static; \
+    chmod +x /etc/init.d/varnishd /etc/init.d/varnishd_static; \
     \
     while IFS= read -r file ; do rm -rf -- "${file}" ; done < /tmp/varnish-dev-files; \
     apk del --purge .varnish-build-deps; \
@@ -172,5 +173,6 @@ COPY templates /etc/gotpl/
 COPY bin /usr/local/bin/
 COPY docker-entrypoint.sh /
 
+
 ENTRYPOINT ["/docker-entrypoint.sh"]
-CMD ["/etc/init.d/varnishd"]
+CMD ["/etc/init.d/varnishd_standardized"]

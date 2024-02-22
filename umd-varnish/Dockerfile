@@ -156,9 +156,9 @@ RUN set -ex; \
 	    /etc/varnish/defaults \
 	    /etc/varnish/includes; \
     \
-    touch /etc/varnish/preset.vcl /etc/init.d/varnishd; \
-    chown varnish:varnish /etc/varnish/preset.vcl /etc/init.d/varnishd /etc/init.d/varnishd_standardized; \
-    chmod +x /etc/init.d/varnishd /etc/init.d/varnishd_standardized; \
+    touch /etc/varnish/preset.vcl; \
+    chown varnish:varnish /etc/varnish/preset.vcl /etc/init.d/varnishd_standardized; \
+    chmod +x /etc/init.d/varnishd_standardized; \
     \
     while IFS= read -r file ; do rm -rf -- "${file}" ; done < /tmp/varnish-dev-files; \
     apk del --purge .varnish-build-deps; \

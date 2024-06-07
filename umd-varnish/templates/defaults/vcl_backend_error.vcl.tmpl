@@ -1,12 +1,17 @@
 # In the event of an error, show friendlier messages.
+# See documentation: https://www.varnish-software.com/developers/tutorials/varnish-builtin-vcl/#hit-for-miss
 sub vcl_backend_error {
   set beresp.http.Content-Type = "text/html; charset=utf-8";
+  set beresp.http.Retry-After = "10";
   set beresp.uncacheable = true;
+  set beresp.ttl = 10s;
   set beresp.http.Cache-Control = "no-store, no-cache, must-revalidate, max-age=0";
   synthetic ({"
 <html>
 <head>
-    <title>Not Found</title>
+    <title>"} + beresp.status + " " + beresp.reason + {"</title>
+    <meta name="stack" content="varnish"/>
+    <meta name="XID" content="} + bereq.xid + {"/>
     <style type="text/css">
         A:link {text-decoration: none;  color: #333333;}
         A:visited {text-decoration: none; color: #333333;}
@@ -14,9 +19,9 @@ sub vcl_backend_error {
         A:hover {text-decoration: underline;}
     </style>
 </head>
-<body onload="setTimeout(function() { window.location.reload() }, 5000)" bgcolor=white text=#333333 style="padding:5px 15px 5px 15px; font-family: myriad-pro-1,myriad-pro-2,corbel,sans-serif;">
+<body bgcolor=white text=#333333 style="padding:5px 15px 5px 15px; font-family: myriad-pro-1,myriad-pro-2,corbel,sans-serif;">
 <H3>Page Unavailable</H3>
-<p>The UMD Libraries page you requested is temporarily unavailable.</p>
+<p>The UMD Libraries page you requested is temporarily unavailable. "} + beresp.reason + {".</p>
 </body>
 </html>
 "});
